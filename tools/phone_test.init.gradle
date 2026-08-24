@@ -1,0 +1,9 @@
+allprojects { project ->
+    project.afterEvaluate {
+        if (project.plugins.hasPlugin('com.android.application')) {
+            project.android.defaultConfig.applicationId =
+                'org.bmtts.bmtextspeech.test'
+            project.android.buildTypes.release.debuggable = true
+        }
+    }
+}
