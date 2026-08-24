@@ -1,4 +1,4 @@
-name: Restore BM Voice Studio v5.6.4 core
+name: Finalize BM Voice Studio v5.6.4 source
 
 on:
   push:
@@ -14,32 +14,29 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Restore exact main.py
+      - name: Restore BmPythonActivity.java
         shell: bash
         run: |
           set -euo pipefail
-          cat \
-            .bm_transfer/main_00.b64 \
-            .bm_transfer/main_01_02.b64 \
-            .bm_transfer/main_03_04.b64 \
-            .bm_transfer/main_05_06.b64 \
-            .bm_transfer/main_07_08.b64 > /tmp/main.py.xz.b64
-          base64 -d /tmp/main.py.xz.b64 > /tmp/main.py.xz
-          xz -dc /tmp/main.py.xz > main.py
+          cat source_restore/pythonactivity_00.b64 source_restore/pythonactivity_01.b64 source_restore/pythonactivity_02.b64 > /tmp/pythonactivity.b64
+          base64 -d /tmp/pythonactivity.b64 > /tmp/pythonactivity.gz
+          mkdir -p android_src/org/bmtts/bmtextspeech
+          gzip -dc /tmp/pythonactivity.gz > android_src/org/bmtts/bmtextspeech/BmPythonActivity.java
+          echo '2de1120ea3af7c7d46dc834fbcb87aa3809bc086929a276a71b8432995f83cb9  android_src/org/bmtts/bmtextspeech/BmPythonActivity.java' | sha256sum -c -
+      - name: Restore Android build script
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat source_restore/buildscript_00.b64 source_restore/buildscript_01.b64 source_restore/buildscript_02.b64 source_restore/buildscript_03.b64 source_restore/buildscript_04.b64 > /tmp/buildscript.b64
+          base64 -d /tmp/buildscript.b64 > /tmp/buildscript.gz
+          gzip -dc /tmp/buildscript.gz > build_bmtts_v520_complete_cached.sh
+          echo '3efc701cfc6ad721ae2a977754ada162b01fae8cbe13da2e60a625a9d18b310c  build_bmtts_v520_complete_cached.sh' | sha256sum -c -
+      - name: Verify main source
+        shell: bash
+        run: |
+          set -euo pipefail
           echo 'a9315b9746b0afc659f4a090bb3524a4809ab8a0d262398420595e7f8fd9a9d8  main.py' | sha256sum -c -
-      - name: Restore missing core files
-        shell: bash
-        run: |
-          set -euo pipefail
-          cat \
-            .bm_transfer/missing_core.tar.xz.b64 \
-            .bm_transfer/missing_core.tail00.b64 \
-            .bm_transfer/missing_core.tail01.b64 \
-            .bm_transfer/missing_core.tail02.b64 > /tmp/missing_core.b64
-          base64 -d /tmp/missing_core.b64 > /tmp/missing_core.tar.xz
-          echo 'f0d3a2b053794fcb33bf89402d8e38f49dd55006cab155064636fc3987c5f80b  /tmp/missing_core.tar.xz' | sha256sum -c -
-          tar -xJf /tmp/missing_core.tar.xz
-      - name: Commit restored source
+      - name: Commit final restored source
         shell: bash
         run: |
           set -euo pipefail
@@ -50,5 +47,5 @@ jobs:
             echo 'Core source already current'
             exit 0
           fi
-          git commit -m 'Restore BM Voice Studio v5.6.4 core source'
+          git commit -m 'Finalize BM Voice Studio v5.6.4 core source'
           git push
