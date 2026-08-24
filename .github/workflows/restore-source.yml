@@ -1,0 +1,36 @@
+name: Restore BM Voice Studio source
+
+on:
+  push:
+    paths:
+      - '.github/workflows/restore-source.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  restore:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Restore exact source
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat source_restore/main_*.b64 | base64 -d | gzip -d > main.py
+          mkdir -p android_src/org/bmtts/bmtextspeech
+          cat source_restore/pythonactivity_*.b64 | base64 -d | gzip -d > android_src/org/bmtts/bmtextspeech/BmPythonActivity.java
+          cat source_restore/buildscript_*.b64 | base64 -d | gzip -d > build_bmtts_v520_complete_cached.sh
+          echo "a9315b9746b0afc659f4a090bb3524a4809ab8a0d262398420595e7f8fd9a9d8  main.py" | sha256sum -c -
+          echo "2de1120ea3af7c7d46dc834fbcb87aa3809bc086929a276a71b8432995f83cb9  android_src/org/bmtts/bmtextspeech/BmPythonActivity.java" | sha256sum -c -
+          echo "3efc701cfc6ad721ae2a977754ada162b01fae8cbe13da2e60a625a9d18b310c  build_bmtts_v520_complete_cached.sh" | sha256sum -c -
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add main.py android_src/org/bmtts/bmtextspeech/BmPythonActivity.java build_bmtts_v520_complete_cached.sh
+          if ! git diff --cached --quiet; then
+            git commit -m "Restore BM Voice Studio v5.6.4 source"
+            git push
+          fi
