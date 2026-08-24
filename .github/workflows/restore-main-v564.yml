@@ -1,0 +1,42 @@
+name: Restore BM Voice Studio v5.6.4 main
+
+on:
+  push:
+
+permissions:
+  contents: write
+
+jobs:
+  restore:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Restore exact main.py
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat \
+            .bm_transfer/main_00.b64 \
+            .bm_transfer/main_01_02.b64 \
+            .bm_transfer/main_03_04.b64 \
+            .bm_transfer/main_05_06.b64 \
+            .bm_transfer/main_07_08.b64 > /tmp/main.py.xz.b64
+          base64 -d /tmp/main.py.xz.b64 > /tmp/main.py.xz
+          xz -dc /tmp/main.py.xz > main.py
+          echo 'a9315b9746b0afc659f4a090bb3524a4809ab8a0d262398420595e7f8fd9a9d8  main.py' | sha256sum -c -
+      - name: Commit restored source
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add main.py
+          if git diff --cached --quiet; then
+            echo 'main.py already current'
+            exit 0
+          fi
+          git commit -m 'Restore BM Voice Studio v5.6.4 main source'
+          git push
