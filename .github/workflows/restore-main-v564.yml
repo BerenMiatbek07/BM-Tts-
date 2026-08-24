@@ -31,7 +31,12 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          base64 -d .bm_transfer/missing_core.tar.xz.b64 > /tmp/missing_core.tar.xz
+          cat \
+            .bm_transfer/missing_core.tar.xz.b64 \
+            .bm_transfer/missing_core.tail00.b64 \
+            .bm_transfer/missing_core.tail01.b64 \
+            .bm_transfer/missing_core.tail02.b64 > /tmp/missing_core.b64
+          base64 -d /tmp/missing_core.b64 > /tmp/missing_core.tar.xz
           echo 'f0d3a2b053794fcb33bf89402d8e38f49dd55006cab155064636fc3987c5f80b  /tmp/missing_core.tar.xz' | sha256sum -c -
           tar -xJf /tmp/missing_core.tar.xz
       - name: Commit restored source
