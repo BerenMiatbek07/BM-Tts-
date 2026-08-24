@@ -1,0 +1,5 @@
+BM Voice Studio v5.6.4 PERSONAL FINAL BUILD FIX source upload.
+
+The repository connector can write normal source files but does not support direct local binary ZIP upload. The two existing part_001.b64 and part_002.b64 files are an incomplete transfer attempt and should not be used as the source package.
+
+A readable source upload will follow in this repository. Main Windows build target: BM Voice Studio v5.6.4 PERSONAL.
