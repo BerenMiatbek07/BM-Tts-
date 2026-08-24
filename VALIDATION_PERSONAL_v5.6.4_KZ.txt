@@ -1,0 +1,26 @@
+BM Voice Studio v5.6.4 PERSONAL — validation
+
+1) Python syntax / compileall: PASS
+2) ElevenLabs + Soniox + clone selected unit tests: 45 PASS
+3) Official ElevenLabs client test checks:
+   - model_id = eleven_v3
+   - language_code = kk
+   - xi-api-key header is supplied
+   - missing key rejected locally
+   - HTTP 403 produces readable access error
+   - resumable MP3 session completes
+4) main.py integration checks:
+   - elevenv3: engine prefix
+   - preview path
+   - full generation path
+   - timecode MP3 -> WAV path
+   - pause/resume session path
+   - local password API-key input
+5) No Firebase/browser-header/Playwright bypass implementation copied from
+   davidsuragan/elevenlabs-alpha-v3.
+
+Not executable in this Linux validation environment:
+- Windows PyInstaller EXE build/smoke test
+- Live ElevenLabs request (requires the owner's API key/account quota)
+- Live Soniox endpoint request
+- Full OmniVoice multi-GB model inference

@@ -1,0 +1,25 @@
+BM Voice Studio v5.6.3 PERSONAL — source validation
+Date: 2026-08-23
+
+Тексерілді:
+- Python compileall: PASS
+- Unit tests: 44 PASS (desktop/Linux stub)
+- Unit tests: 44 PASS (Windows platform stub)
+- Original v5.6.2 regression tests: preserved
+- Soniox voice catalogue/chunking: PASS
+- Soniox generation forced to 1 worker for session reliability: PASS
+- Kazakh OmniVoice target language kk passed to model.generate(): PASS
+- Russian/English target language support retained: PASS
+- Clone reference language selector: kk / ru / en
+- Russian live challenge now remains Russian (previously fell back to English): FIXED
+- Corrupted/mojibake Sherpa/Piper download error messages: FIXED
+- Desktop MP3->WAV: soundfile MP3 decoder first, FFmpeg fallback second
+- Windows build script: Python 3.12 check + source tests before PyInstaller
+
+Маңызды шектеулер:
+- Бұл Linux validation ортасында нақты Windows .exe орындалмады/жиналмады.
+- OmniVoice үлкен моделі осы ортада жүктеліп, нақты GPU/CPU inference жасалмады.
+  API signature және language параметрі ресми OmniVoice generate API-мен тексерілді,
+  ал source tests fake model арқылы kk/ru/en параметрінің жетуін тексереді.
+- Soniox веб endpoint-іне бұл контейнерден сыртқы DNS жоқ, сондықтан live HTTP TTS
+  орындалмады. Request protocol davidsuragan/pysoniox public source-пен салыстырылды.
